@@ -1,7 +1,9 @@
 package com.animee.localmusic;
 
+import android.app.AlertDialog;
 import android.app.Service;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,8 +20,16 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,8 +38,10 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -42,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //    数据源
     List<LocalMusicBean>mDatas;
     private LocalMusicAdapter adapter;
+
 
     private int currentPosition;
 //    记录当前正在播放的音乐的位置
@@ -59,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportActionBar().hide();
         initView();
         mediaPlayer = new MediaPlayer();
         mDatas = new ArrayList<>();
@@ -67,14 +79,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         adapter = new LocalMusicAdapter(this, mDatas);
         musicRv.setAdapter(adapter);
         seekBar.setOnSeekBarChangeListener(new MySeekBar());
+
 //        设置布局管理器
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         musicRv.setLayoutManager(layoutManager);
+        registerForContextMenu(musicRv);
 //        加载本地数据源
         loadLocalMusicData();
+
 //        设置每一项的点击事件
         setEventListener();
+        adapter.setOnItemClickListener(new LocalMusicAdapter.OnItemClickListener() {
+            @Override
+            public void OnItemClick(View view, int position) {
+
+            }
+
+            @Override
+            public void OnItemLongClick(int position) {
+                adapter.remove(position);
+            }
+
+        });
+
     }
+
+    //菜单方法
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.add_menu,menu);
+        return true;
+    }
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+
+            case R.id.explain:
+                explainDialog();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void explainDialog() {
+    }
+
+
 
 
     /* 设置每一项的点击事件*/
@@ -85,6 +134,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 currentPlayPosition = position;
                 LocalMusicBean musicBean = mDatas.get(position);
                 playMusicInMusicBean(musicBean);
+            }
+
+            @Override
+            public void OnItemLongClick(int position) {
+
             }
         });
     }
@@ -296,6 +350,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         random.setOnClickListener(this);
 
     }
+
+
     public class MySeekBar implements SeekBar.OnSeekBarChangeListener {
 
         public void onProgressChanged(SeekBar seekBar, int progress,
@@ -312,7 +368,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             isSeekBarChanging = false;
             mediaPlayer.seekTo(seekBar.getProgress());
         }
-
     }
 }
 

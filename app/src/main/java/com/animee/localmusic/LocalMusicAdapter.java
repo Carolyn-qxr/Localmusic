@@ -16,6 +16,8 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
     List<LocalMusicBean>mDatas;
 
     OnItemClickListener onItemClickListener;
+    private int mPosition=-1;
+
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
@@ -23,6 +25,7 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
 
     public interface OnItemClickListener{
         public void OnItemClick(View view,int position);
+        public void OnItemLongClick(int position);
     }
     public LocalMusicAdapter(Context context, List<LocalMusicBean> mDatas) {
         this.context = context;
@@ -38,7 +41,7 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull LocalMusicViewHolder holder, @SuppressLint("RecyclerView") final int position) {
+    public void onBindViewHolder(@NonNull final LocalMusicViewHolder holder, @SuppressLint("RecyclerView") final int position) {
         LocalMusicBean musicBean = mDatas.get(position);
         holder.idTv.setText(musicBean.getId());
         holder.songTv.setText(musicBean.getSong());
@@ -52,6 +55,19 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
                 onItemClickListener.OnItemClick(v,position);
             }
         });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener(){
+
+            @Override
+            public boolean onLongClick(View v) {
+                int ps = holder.getLayoutPosition();
+                onItemClickListener.OnItemLongClick(ps);
+                return false;
+            }
+        });
+
+    }
+    public int getmPosition(){
+        return mPosition;
     }
 
     @Override
@@ -70,4 +86,9 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
             timeTv = itemView.findViewById(R.id.item_local_music_durtion);
         }
     }
+    public void remove(int position){
+        mDatas.remove(position);
+        notifyDataSetChanged();
+    }
+
 }
