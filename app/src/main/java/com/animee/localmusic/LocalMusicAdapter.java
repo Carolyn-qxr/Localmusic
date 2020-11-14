@@ -25,7 +25,6 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
 
     public interface OnItemClickListener{
         public void OnItemClick(View view,int position);
-        public void OnItemLongClick(int position);
     }
     public LocalMusicAdapter(Context context, List<LocalMusicBean> mDatas) {
         this.context = context;
@@ -55,15 +54,6 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
                 onItemClickListener.OnItemClick(v,position);
             }
         });
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener(){
-
-            @Override
-            public boolean onLongClick(View v) {
-                int ps = holder.getLayoutPosition();
-                onItemClickListener.OnItemLongClick(ps);
-                return false;
-            }
-        });
 
     }
     public int getmPosition(){
@@ -86,9 +76,6 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
             timeTv = itemView.findViewById(R.id.item_local_music_durtion);
         }
     }
-    public void remove(int position){
-        mDatas.remove(position);
-        notifyDataSetChanged();
-    }
+
 
 }

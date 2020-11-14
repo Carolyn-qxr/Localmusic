@@ -89,18 +89,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 //        设置每一项的点击事件
         setEventListener();
-        adapter.setOnItemClickListener(new LocalMusicAdapter.OnItemClickListener() {
-            @Override
-            public void OnItemClick(View view, int position) {
-
-            }
-
-            @Override
-            public void OnItemLongClick(int position) {
-                adapter.remove(position);
-            }
-
-        });
 
     }
 
@@ -114,18 +102,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (item.getItemId()){
 
             case R.id.explain:
-                explainDialog();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
-
-    private void explainDialog() {
-    }
-
-
-
-
     /* 设置每一项的点击事件*/
     private void setEventListener() {
         adapter.setOnItemClickListener(new LocalMusicAdapter.OnItemClickListener() {
@@ -136,10 +116,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 playMusicInMusicBean(musicBean);
             }
 
-            @Override
-            public void OnItemLongClick(int position) {
-
-            }
         });
     }
 
@@ -359,13 +335,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         /*滚动时,应当暂停后台定时器*/
-        public void onStartTrackingTouch(SeekBar seekBar) {
-            isSeekBarChanging = true;
-        }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                isSeekBarChanging = true;
+            }
 
-        /*滑动结束后，重新设置值*/
-        public void onStopTrackingTouch(SeekBar seekBar) {
-            isSeekBarChanging = false;
+            /*滑动结束后，重新设置值*/
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                isSeekBarChanging = false;
             mediaPlayer.seekTo(seekBar.getProgress());
         }
     }
